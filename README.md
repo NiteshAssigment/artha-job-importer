@@ -1,149 +1,180 @@
-📌 Job Importer — MERN + BullMQ + Redis
+# Job Importer — MERN + BullMQ + Redis  
+Automated Job Feed Import System
 
-Automated Job Feed Import System (Assignment Submission)
+This project imports job listings from real RSS/XML feeds, parses them, stores them in MongoDB, and displays import logs in a clean frontend interface.  
+The system is designed using **Next.js, Node.js, Express, MongoDB, Redis, and BullMQ workers**.
 
-This project imports job listings from real RSS/XML feeds, parses them, stores them in MongoDB, and shows import logs in a clean frontend app.
-The system is designed using Next.js, Node.js, Express, MongoDB, Redis, and BullMQ workers.
+---
 
-📁 Project Structure
+## 📁 Project Structure
+
+```
 root/
- ├── client/               # Frontend (Next.js App)
+ ├── client/               # Frontend (Next.js)
  ├── server/               # Backend (Express + MongoDB + Redis + BullMQ)
  ├── docs/
- │    └── architecture.md  # System design explanation + diagrams
- └── README.md             # You're reading this :)
+ │    └── architecture.md  # System design + diagrams
+ └── README.md             # Documentation
+```
 
-🚀 Features
-🔹 Backend (Node.js + Express)
+---
 
-Fetch jobs from real RSS/XML feeds
+## 🚀 Features
 
-Parse XML using fast-xml-parser
+### **Backend (Node.js + Express + BullMQ)**
+- Fetch jobs from **real RSS/XML feeds**
+- Parse XML with `fast-xml-parser`
+- Insert / update jobs in MongoDB
+- Store import logs
+- Queue processing with **BullMQ**
+- Background worker powered by Redis
+- Modular MVC folder structure
 
-Insert/update jobs in MongoDB
+### **Frontend (Next.js 14)**
+- Run import manually
+- Show import results (new, updated, failed)
+- Import history page
+- API integration via Axios
+- Modern clean UI
 
-Store import logs
+### **Worker Service**
+- Processes job-import tasks
+- Fetches, parses, and stores jobs
+- Writes import logs into MongoDB
 
-Background processing using BullMQ Worker
+---
 
-Redis queue for reliable job processing
+## ⚙️ Tech Stack
 
-Fully structured MVC architecture
+### **Frontend**
+- Next.js 14 (App Router)
+- Axios
+- Tailwind CSS (optional)
 
-🔹 Frontend (Next.js)
+### **Backend**
+- Node.js
+- Express.js
+- Mongoose
+- fast-xml-parser
+- BullMQ
+- Redis
 
-Manual “Import Jobs” UI
+---
 
-Display status for each feed
+## 🏗 Installation & Setup
 
-Import history table
+### 1️⃣ Clone the Repository
 
-Clean and simple layout
-
-Axios-based API integration
-
-🔹 Worker Service
-
-Processes job import queue
-
-Fetches & parses job feeds
-
-Inserts/updates into MongoDB
-
-Writes import logs efficiently
-
-⚙️ Tech Stack
-Frontend (client/)
-
-Next.js 14 (App Router)
-
-Axios
-
-Tailwind CSS (optional)
-
-Backend (server/)
-
-Node.js + Express
-
-Mongoose (MongoDB ORM)
-
-Axios
-
-fast-xml-parser
-
-BullMQ
-
-Redis (queue engine)
-
-🏗 Setup Instructions (Local Development)
-1️⃣ Clone the Repo
+```bash
 git clone https://github.com/YOUR_USERNAME/job-importer.git
 cd job-importer
+```
 
-2️⃣ Install Dependencies
-Backend:
+---
+
+### 2️⃣ Install Dependencies
+
+**Backend**
+```bash
 cd server
 npm install
+```
 
-Frontend:
+**Frontend**
+```bash
 cd ../client
 npm install
+```
 
-3️⃣ Setup Environment Variables
+---
 
-Create:
+### 3️⃣ Configure Environment Variables
 
-server/.env
+Create a file: `server/.env`
 
+```
 MONGO_URI=mongodb://127.0.0.1:27017/jobImporter
 REDIS_URL=redis://127.0.0.1:6379
 PORT=5000
+```
 
-4️⃣ Run Services
-Start MongoDB
+---
 
-If using local MongoDB:
+### 4️⃣ Start MongoDB
 
+Local MongoDB:
+```bash
 mongod
+```
 
-Start Redis Container
+---
+
+### 5️⃣ Start Redis
+
+Using Docker:
+```bash
 docker run --name redis -d -p 6379:6379 redis
+```
 
-5️⃣ Run Backend API
+---
+
+### 6️⃣ Start Backend
+
+```bash
 cd server
 npm run dev
+```
 
-6️⃣ Start the Worker
+---
+
+### 7️⃣ Start Worker
+
+```bash
 npm run worker
+```
 
+Expected logs:
 
-You MUST see:
-
+```
 MongoDB connected
 Redis connected
 Worker is listening for jobs...
+```
 
-7️⃣ Start Frontend (Next.js)
+---
+
+### 8️⃣ Start Frontend
+
+```bash
 cd ../client
 npm run dev
+```
 
-
-Visit:
-
+Open the app:
+```
 http://localhost:3000
+```
 
-🧪 API Endpoints
-Trigger Import
+---
+
+## 🧪 API Endpoints
+
+### **Run Import**
+```
 GET /api/import/run
+```
 
-Get Import History
+### **Get Import History**
+```
 GET /api/import/history
+```
 
-📦 MongoDB Collections
-jobs
+---
 
-Stores parsed jobs:
+## 🗄 MongoDB Collections
 
+### **jobs**
+```
 {
   jobId: String,
   title: String,
@@ -157,11 +188,10 @@ Stores parsed jobs:
   pubDate: Date,
   sourceUrl: String
 }
+```
 
-importlogs
-
-Logs every import:
-
+### **importlogs**
+```
 {
   timestamp: Date,
   fileName: String,
@@ -171,11 +201,13 @@ Logs every import:
   updatedJobs: Number,
   failedJobs: Array
 }
+```
 
-🧩 Supported Feeds
+---
 
-The system fetches jobs from:
+## 📚 Supported Job Feeds
 
+```
 https://jobicy.com/?feed=job_feed
 https://jobicy.com/?feed=job_feed&job_categories=data-science
 https://jobicy.com/?feed=job_feed&job_categories=design-multimedia
@@ -185,37 +217,27 @@ https://jobicy.com/?feed=job_feed&job_categories=management
 https://jobicy.com/?feed=job_feed&job_categories=smm&job_types=full-time
 https://jobicy.com/?feed=job_feed&job_categories=seller&job_types=full-time&search_region=france
 https://www.higheredjobs.com/rss/articleFeed.cfm
+```
 
-📚 Documentation
+---
 
-Full architecture explanation + diagrams are in:
+## 📘 Documentation
 
-/docs/architecture.md
+Full architectural explanation and diagrams:  
+`/docs/architecture.md`
 
-🧑‍💻 How it Works (Summary)
+---
 
-Frontend triggers API → /api/import/run
+## 🧑‍💻 System Overview (Summary)
 
-Backend adds a new job-import task to Redis Queue
+1. Frontend sends request → `/api/import/run`
+2. Backend enqueues job → Redis Queue
+3. Worker receives job → processes each feed
+4. XML → parsed → normalized → saved
+5. Worker writes import logs
+6. Frontend displays:
+   - imported jobs  
+   - updated jobs  
+   - failed jobs  
+   - history  
 
-BullMQ worker receives the job
-
-Worker processes each RSS feed:
-
-fetch XML
-
-parse XML
-
-normalize fields
-
-insert/update MongoDB
-
-Worker stores import log
-
-Frontend displays:
-
-import logs
-
-status
-
-job counts
